@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VJSON Loading Test</title>
+</head>
+<body>
+    <h1>VJSON File Loading Test</h1>
+    <div id="status">Testing...</div>
+    
+    <script>
+        async function testVjsonLoading() {
+            const statusDiv = document.getElementById('status');
+            
+            try {
+                // Test if the vjson file can be loaded
+                const response = await fetch('./ss-0121.vjson');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                if (data && data.version && data.type === 'ViewerApp') {
+                    statusDiv.innerHTML = `
+                        <p style="color: green;">✅ VJSON file loaded successfully!</p>
+                        <p><strong>Version:</strong> ${data.version}</p>
+                        <p><strong>Type:</strong> ${data.type}</p>
+                        <p><strong>Plugins count:</strong> ${data.plugins ? data.plugins.length : 0}</p>
+                    `;
+                } else {
+                    throw new Error('Invalid VJSON format');
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <p style="color: red;">❌ Failed to load VJSON file: ${error.message}</p>
+                    <p>Please ensure the file exists in the public directory and the development server is running.</p>
+                `;
+            }
+        }
+        
+        // Run the test when the page loads
+        testVjsonLoading();
+    </script>
+</body>
+</html> 
